@@ -1,0 +1,38 @@
+{
+    "name": "Collecting Adventure 2",
+    "tree": {
+        "$className": "DataModel",
+        "ReplicatedFirst": {
+            "Source": {
+                "$path": "src/ReplicatedFirst"
+            }
+        },
+        "ReplicatedStorage": {
+            "Source": {
+                "$path": "src/ReplicatedStorage"
+            }
+        },
+        "ServerScriptService": {
+            "Source": {
+                "$path": "src/ServerScriptService"
+            }
+        },
+        "ServerStorage": {
+            "Source": {
+                "$path": "src/ServerStorage"
+            }
+        },
+        "StarterPlayer": {
+            "StarterPlayerScripts": {
+                "Source": {
+                    "$path": "src/StarterPlayer/StarterPlayerScripts"
+                }
+            },
+            "StarterCharacterScripts": {
+                "Source": {
+                    "$path": "src/StarterPlayer/StarterCharacterScripts"
+                }
+            }
+        }
+    }
+}
