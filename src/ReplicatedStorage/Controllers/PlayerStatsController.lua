@@ -14,9 +14,15 @@ end)
 function PlayerStatsController.Init()
 	local playerStats = GetPlayerStats:InvokeServer()
 	PlayerStatsController.Stats = playerStats
-	PlayerStatsController.StatsChanged:Connect(function(...)
-		print(...)
-	end)
+end
+
+function PlayerStatsController.GetStats()
+	if not PlayerStatsController.Stats then
+		repeat
+			task.wait()
+		until PlayerStatsController.Stats
+	end
+	return PlayerStatsController.Stats
 end
 
 return PlayerStatsController
