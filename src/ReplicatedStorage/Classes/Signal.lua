@@ -11,6 +11,10 @@ function Signal:Fire(...)
 	self.bind:Fire(...)
 end
 
+function Signal:Wait()
+	self.bind:Wait()
+end
+
 function Signal:Connect(...)
 	local bind: BindableEvent = self.bind
 	return bind.Event:Connect(...)

@@ -12,17 +12,24 @@ PlayerStatsChanged.OnClientEvent:Connect(function(key, value, oldValue)
 end)
 
 function PlayerStatsController.Init()
-	local playerStats = GetPlayerStats:InvokeServer()
-	PlayerStatsController.Stats = playerStats
+	local stats = PlayerStatsController.GetStatsFromServer()
+	PlayerStatsController.SetStatsToController(stats)
 end
 
 function PlayerStatsController.GetStats()
 	if not PlayerStatsController.Stats then
-		repeat
-			task.wait()
-		until PlayerStatsController.Stats
+		PlayerStatsController.StatsChanged:Wait()
 	end
 	return PlayerStatsController.Stats
+end
+
+function PlayerStatsController.GetStatsFromServer()
+	return GetPlayerStats:InvokeServer()
+end
+
+function PlayerStatsController.SetStatsToController(stats: {})
+	PlayerStatsController.Stats = stats
+	PlayerStatsController.StatsChanged:Fire()
 end
 
 return PlayerStatsController
