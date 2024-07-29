@@ -9,11 +9,14 @@ function FruitService.Start()
 
 	for _, tree: Model in ipairs(workspace.Trees:GetChildren()) do
 		local fruitSpawns = FruitService.GetFruitSpawns(tree)
+		local fruitStats = FruitStats[tree:GetAttribute("Fruit")]
 		for _, fruitSpawn in ipairs(fruitSpawns) do
-			local fruit = FruitService.CreateFruitModel(tree:GetAttribute("Fruit"))
-			FruitService.PositionFruitModelOnFruitSpawn(fruit, fruitSpawn)
-			FruitService.InitializePromptOnFruit(fruit)
-			fruit.Parent = tree
+			for _ = 1, fruitStats.FruitsPerSpawn do
+				local fruit = FruitService.CreateFruitModel(tree:GetAttribute("Fruit"))
+				FruitService.PositionFruitModelOnFruitSpawn(fruit, fruitSpawn)
+				FruitService.InitializePromptOnFruit(fruit)
+				fruit.Parent = tree
+			end
 		end
 	end
 end
@@ -35,18 +38,39 @@ function FruitService.CreateFruitModel(name: string): Model
 end
 
 function FruitService.PositionFruitModelOnFruitSpawn(fruit: Model, spawn: Part)
-	fruit:PivotTo(
-		spawn.CFrame
-			* CFrame.new(
-				if spawn.Size.X < spawn.Size.Z
-					then Random.new():NextNumber(-1, 1) * spawn.Size.X / 2
-					else Random.new():NextNumber(-1, 1) * spawn.Size.Z,
-				-spawn.Size.Y / 2 - fruit:GetExtentsSize().Y / 2,
-				if spawn.Size.X > spawn.Size.Z
-					then Random.new():NextNumber(-1, 1) * spawn.Size.Z / 2
-					else Random.new():NextNumber(-1, 1) * spawn.Size.X
-			)
-	)
+	local fruitStats = FruitStats[fruit.Name]
+	if fruitStats.FruitSpawnType == "UnderTreeStick" then
+		fruit:PivotTo(
+			spawn.CFrame
+				* CFrame.new(
+					if spawn.Size.X < spawn.Size.Z
+						then Random.new():NextNumber(-1, 1) * spawn.Size.X / 2
+						else Random.new():NextNumber(-1, 1) * spawn.Size.Z,
+					-spawn.Size.Y / 2 - fruit:GetExtentsSize().Y / 2,
+					if spawn.Size.X > spawn.Size.Z
+						then Random.new():NextNumber(-1, 1) * spawn.Size.Z / 2
+						else Random.new():NextNumber(-1, 1) * spawn.Size.X
+				)
+		)
+	elseif fruitStats.FruitSpawnType == "RopeConnected" then
+		local attachment0 = Instance.new("Attachment")
+		attachment0.Name = "Attachment0"
+		attachment0.Parent = spawn
+
+		local attachment1 = Instance.new("Attachment")
+		attachment1.Name = "Attachment1"
+		attachment1.Parent = fruit.PrimaryPart
+
+		local rope = Instance.new("RopeConstraint")
+		rope.Color = BrickColor.new("Earth green")
+		rope.Attachment0 = attachment0
+		rope.Attachment1 = attachment1
+		rope.Visible = true
+		rope.Parent = spawn
+
+		fruit:PivotTo(spawn.CFrame * CFrame.new(0, 5, 0) * CFrame.Angles(0, math.rad(math.random(0, 360)), 0))
+		fruit:PivotTo(fruit:GetPivot() * CFrame.new(0, 0, math.random(5, 8)))
+	end
 end
 
 function FruitService.InitializePromptOnFruit(fruit: Model)
