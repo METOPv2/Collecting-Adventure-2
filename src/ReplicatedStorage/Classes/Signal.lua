@@ -12,7 +12,7 @@ function Signal:Fire(...)
 end
 
 function Signal:Wait()
-	self.bind:Wait()
+	self.bind.Event:Wait()
 end
 
 function Signal:Connect(...)

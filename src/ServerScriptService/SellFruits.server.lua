@@ -1,5 +1,5 @@
 local PlayerStatsService = require(game.ServerStorage.Source.Services.PlayerStats.PlayerStatsService)
-local sellPrompt: ProximityPrompt = workspace.Rig.HumanoidRootPart.Sell
+local sellPrompt: ProximityPrompt = workspace.SellMan.HumanoidRootPart.Sell
 
 sellPrompt.Triggered:Connect(function(playerWhoTriggered)
 	local stats = PlayerStatsService.GetPlayerStatsFromService(playerWhoTriggered)
