@@ -1,6 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 local Fruit = require(ReplicatedStorage.Source.Classes.Fruit)
+local FruitStats = require(ReplicatedStorage.Source.Stats.Fruits)
 local FruitService = {}
 
 function FruitService.Start()
@@ -49,14 +50,16 @@ function FruitService.PositionFruitModelOnFruitSpawn(fruit: Model, spawn: Part)
 end
 
 function FruitService.InitializePromptOnFruit(fruit: Model)
+	local fruitStats = FruitStats[fruit.Name]
 	local prompt = Instance.new("ProximityPrompt")
 	prompt.ActionText = "Harvest"
+	prompt.HoldDuration = fruitStats.HarvestTime
 	prompt.RequiresLineOfSight = false
 	prompt.Parent = fruit.PrimaryPart
 	prompt.Triggered:Connect(function(player)
 		local tree = fruit.Parent
 		FruitService.FruitHarvest(player, fruit)
-		task.wait(10)
+		task.wait(fruitStats.RespawnTime)
 		local fruitSpawn = FruitService.GetFruitSpawn(tree)
 		fruit = FruitService.CreateFruitModel(fruit.Name)
 		FruitService.PositionFruitModelOnFruitSpawn(fruit, fruitSpawn)
@@ -75,8 +78,10 @@ function FruitService.FruitHarvest(player, fruit)
 	end
 	game:GetService("Debris"):AddItem(fruit, 2)
 	local fruitName = fruit.Name
+	local fruitStats = FruitStats[fruitName]
 	fruit = Fruit.new()
 	fruit.Name = fruitName
+	fruit.Value = fruitStats.Value
 	local playerStats = FruitService.PlayerStatsService.GetPlayerStatsFromService(player)
 	playerStats:insert("Inventory", fruit)
 end

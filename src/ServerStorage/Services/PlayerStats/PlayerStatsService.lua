@@ -63,8 +63,28 @@ function PlayerStatsService.GetPlayerStatsFromDataStore(): PlayerStatsTemplate.P
 		return self[key]
 	end
 
+	function Stats:increment(key, amount)
+		local player: Player = PlayerStatsService.GetPlayerByStats(self)
+		local oldValue = self[key]
+		self[key] += amount
+		PlayerStatsChangedRemoteEvent:FireClient(player, key, self[key], oldValue)
+	end
+
 	function Stats:remove(key)
+		local player: Player = PlayerStatsService.GetPlayerByStats(self)
+		local oldValue = self[key]
 		self[key] = nil
+		PlayerStatsChangedRemoteEvent:FireClient(player, key, self[key], oldValue)
+	end
+
+	function Stats:removeTable(key, t)
+		local player: Player = PlayerStatsService.GetPlayerByStats(self)
+		local oldValue = table.clone(self[key])
+		local i = table.find(self[key], t)
+		if i then
+			table.remove(self[key], i)
+			PlayerStatsChangedRemoteEvent:FireClient(player, key, self[key], oldValue)
+		end
 	end
 
 	function Stats:Destroy()
