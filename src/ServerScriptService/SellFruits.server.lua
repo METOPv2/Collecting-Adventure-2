@@ -1,11 +1,8 @@
-local PlayerStatsService = require(game.ServerStorage.Source.Services.PlayerStats.PlayerStatsService)
 local sellPrompt: ProximityPrompt = workspace.SellMan.HumanoidRootPart.Sell
 
 sellPrompt.Triggered:Connect(function(playerWhoTriggered)
-	local stats = PlayerStatsService.GetPlayerStatsFromService(playerWhoTriggered)
-	for _, fruit in ipairs(stats.Inventory) do
-		stats.Money += fruit.Value
+	for _, fruit in ipairs(playerWhoTriggered.PlayerStats.Inventory:GetChildren()) do
+		playerWhoTriggered.PlayerStats.Money.Value += fruit.Value.Value
+		fruit:Destroy()
 	end
-	stats:set("Inventory", {})
-	stats:set("Money", stats.Money)
 end)

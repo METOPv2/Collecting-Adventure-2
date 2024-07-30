@@ -1,6 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
-local PlayerStatsService = require(ServerStorage.Source.Services.PlayerStats.PlayerStatsService)
+local ObjectAndTableConverterService = require(ServerStorage.Source.Services.ObjectAndTableConverterService)
 local Fruit = require(ReplicatedStorage.Source.Classes.Fruit)
 local FruitStats = require(ReplicatedStorage.Source.Stats.Fruits)
 local FruitService = {}
@@ -105,8 +105,9 @@ function FruitService.FruitHarvest(player, fruit)
 	fruit = Fruit.new()
 	fruit.Name = fruitName
 	fruit.Value = fruitStats.Value
-	local playerStats = PlayerStatsService.GetPlayerStatsFromService(player)
-	playerStats:insert("Inventory", fruit)
+	local fruitObject = ObjectAndTableConverterService.TableToObject(fruit)
+	fruitObject.Name = fruit.Name
+	fruitObject.Parent = player.PlayerStats.Inventory
 end
 
 function FruitService.GetFruitSpawn(tree: Model): Part

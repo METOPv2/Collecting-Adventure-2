@@ -1,14 +1,9 @@
-local PlayerStatsController = require(game.ReplicatedStorage:WaitForChild("Source").Controllers.PlayerStatsController)
 local island: Frame = game.Players.LocalPlayer.PlayerGui:WaitForChild("Main").Island
+local money: NumberValue = game.Players.LocalPlayer:WaitForChild("PlayerStats").Money
 
-local function UpdateMoney(money: number)
-	island.Money.TextLabel.Text = string.format("$%.2f", money)
+local function UpdateMoney(newMoney)
+	island.Money.TextLabel.Text = string.format("$%.2f", newMoney)
 end
 
-local stats = PlayerStatsController:GetStats()
-UpdateMoney(stats.Money)
-PlayerStatsController.StatsChanged:Connect(function(key, value)
-	if key == "Money" then
-		UpdateMoney(value)
-	end
-end)
+UpdateMoney(money.Value)
+money.Changed:Connect(UpdateMoney)
