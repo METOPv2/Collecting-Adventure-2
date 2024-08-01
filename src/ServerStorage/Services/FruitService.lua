@@ -78,6 +78,7 @@ function FruitService.InitializePromptOnFruit(fruit: Model)
 	prompt.ActionText = "Harvest"
 	prompt.HoldDuration = fruitStats.HarvestTime
 	prompt.RequiresLineOfSight = false
+	prompt.KeyboardKeyCode = Enum.KeyCode.F
 	prompt.Parent = fruit.PrimaryPart
 	prompt.Triggered:Connect(function(player)
 		local tree = fruit.Parent

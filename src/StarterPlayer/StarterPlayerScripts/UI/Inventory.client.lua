@@ -3,7 +3,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local inventoryHolder: ScreenGui = Players.LocalPlayer.PlayerGui:WaitForChild("Inventory").Background.Holder
 local inventoryItemTemplate: Frame = ReplicatedStorage.Assets.UI.InventoryItem
 local fruitAssets: Folder = ReplicatedStorage.Assets.Fruits
-local inventory: Folder = game.Players.LocalPlayer:WaitForChild("PlayerStats").Inventory
+local inventoryStats: Folder = game.Players.LocalPlayer:WaitForChild("PlayerStats").Inventory
 
 local inventoryElements = {}
 
@@ -36,9 +36,9 @@ local function ItemRemoved(item)
 	inventoryElements[item] = nil
 end
 
-for _, item in ipairs(inventory:GetChildren()) do
+for _, item in ipairs(inventoryStats:GetChildren()) do
 	ItemAdded(item)
 end
 
-inventory.ChildAdded:Connect(ItemAdded)
-inventory.ChildRemoved:Connect(ItemRemoved)
+inventoryStats.ChildAdded:Connect(ItemAdded)
+inventoryStats.ChildRemoved:Connect(ItemRemoved)

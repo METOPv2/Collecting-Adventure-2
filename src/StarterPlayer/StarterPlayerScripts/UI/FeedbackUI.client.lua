@@ -1,6 +1,6 @@
 local feedbackUI: ScreenGui = game.Players.LocalPlayer.PlayerGui:WaitForChild("Feedback")
 local textBox: TextBox = feedbackUI.Background.Holder.TextBoxHolder.TextBox
-local sendButton: TextButton = feedbackUI.Background.Send
+local sendButton: TextButton = feedbackUI.Background.Topbar.SendButton
 local sendFeedback: RemoteEvent = game.ReplicatedStorage.RemoteEvents.SendFeedback
 
 local lastClick = os.clock()
