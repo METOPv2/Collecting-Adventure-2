@@ -11,6 +11,8 @@ local function ItemAdded(item)
 	local itemFrame = inventoryItemTemplate:Clone()
 	itemFrame.FruitName.Text = item.Name
 	itemFrame.Parent = inventoryHolder
+	itemFrame.Rarities.IsGolden.Visible = item.IsGolden.Value
+	itemFrame.Rarities.IsDiamond.Visible = item.IsDiamond.Value
 	local fruit: Model = fruitAssets:FindFirstChild(item.Name):Clone()
 	local fruitSize = fruit:GetExtentsSize()
 	fruit.Parent = itemFrame.ViewportFrame

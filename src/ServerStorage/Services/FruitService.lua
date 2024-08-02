@@ -105,7 +105,18 @@ function FruitService.FruitHarvest(player, fruit)
 	local fruitStats = FruitStats[fruitName]
 	fruit = Fruit.new()
 	fruit.Name = fruitName
+	fruit.IsDiamond = false
+	fruit.IsGolden = false
 	fruit.Value = fruitStats.Value
+	if math.random(1, 3) == 1 then
+		if math.random(1, 5) == 1 then
+			fruit.IsDiamond = true
+			fruit.Value *= 5
+		else
+			fruit.IsGolden = true
+			fruit.Value *= 2
+		end
+	end
 	local fruitObject = ObjectAndTableConverterService.TableToObject(fruit)
 	fruitObject.Name = fruit.Name
 	fruitObject.Parent = player.PlayerStats.Inventory
