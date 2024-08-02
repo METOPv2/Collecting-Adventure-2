@@ -30,7 +30,7 @@ local function InitializeParticles()
 	attachment.CFrame = CFrame.new(
 		0,
 		-(
-				script.Parent.Parent.HumanoidRootPart.Position
+				script:FindFirstAncestorOfClass("Model"):GetPivot().Position
 				- (
 					game.Players.LocalPlayer.Character:GetPivot().Position
 					- Vector3.new(0, game.Players.LocalPlayer.Character:GetExtentsSize().Y / 2, 0)
@@ -38,7 +38,7 @@ local function InitializeParticles()
 			).Magnitude,
 		0
 	)
-	attachment.Parent = script.Parent.Parent.HumanoidRootPart
+	attachment.Parent = script:FindFirstAncestorOfClass("Model").PrimaryPart
 	currentParticles = sprintParticles:Clone()
 	currentParticles.Parent = attachment
 end
