@@ -3,7 +3,13 @@ local ServerStorage = game:GetService("ServerStorage")
 local ObjectAndTableConverterService = require(ServerStorage.Source.Services.ObjectAndTableConverterService)
 local Fruit = require(ReplicatedStorage.Source.Classes.Fruit)
 local FruitStats = require(ReplicatedStorage.Source.Stats.Fruits)
+local NotificationsService = require(game.ServerStorage.Source.Services.NotiifcationsService)
 local FruitService = {}
+
+function FruitService.Init()
+	local sellPrompt: ProximityPrompt = workspace.SellMan.HumanoidRootPart.Sell
+	sellPrompt.Triggered:Connect(FruitService.SellFruits)
+end
 
 function FruitService.Start()
 	for _, tree: Model in ipairs(workspace.Trees:GetChildren()) do
@@ -120,11 +126,35 @@ function FruitService.FruitHarvest(player, fruit)
 	local fruitObject = ObjectAndTableConverterService.TableToObject(fruit)
 	fruitObject.Name = fruit.Name
 	fruitObject.Parent = player.PlayerStats.Inventory
+	local description =
+		string.format("$%.2f. %s", fruit.Value, fruit.IsGolden and "Golden." or (fruit.IsDiamond and "Diamond." or ""))
+	NotificationsService.Notify(player, fruit.Name, description, 2)
 end
 
 function FruitService.GetFruitSpawn(tree: Model): Part
 	local fruitSpawns = FruitService.GetFruitSpawns(tree)
 	return fruitSpawns[math.random(1, #fruitSpawns)]
+end
+
+function FruitService.SellFruits(player)
+	if #player.PlayerStats.Inventory:GetChildren() > 0 then
+		local earned = 0
+		local fruitsSold = 0
+		for _, fruit in ipairs(player.PlayerStats.Inventory:GetChildren()) do
+			player.PlayerStats.Money.Value += fruit.Value.Value
+			earned += fruit.Value.Value
+			fruitsSold += 1
+			fruit:Destroy()
+		end
+		NotificationsService.Notify(
+			player,
+			"Fruits sold",
+			string.format("You sold %d fruit%s and earned $%.2f.", fruitsSold, fruitsSold > 1 and "s" or "", earned),
+			5
+		)
+	else
+		NotificationsService.Notify(player, "No fruits", "Harvest fruits in order to sell them.", 5)
+	end
 end
 
 return FruitService
