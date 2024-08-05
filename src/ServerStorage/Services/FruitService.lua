@@ -106,6 +106,20 @@ function FruitService.FruitHarvest(player, fruit)
 			fruitPart.CanCollide = true
 		end
 	end
+	local att = Instance.new("Attachment")
+	att.Parent = fruit.PrimaryPart
+	local particles: ParticleEmitter = game.ReplicatedStorage.Assets.Particles.FruitHarvest:Clone()
+	particles.Parent = att
+	local att0 = Instance.new("Attachment")
+	att0.CFrame = CFrame.new(fruit:GetExtentsSize().X / 2, 0, 0)
+	att0.Parent = fruit.PrimaryPart
+	local att1 = Instance.new("Attachment")
+	att1.CFrame = CFrame.new(-fruit:GetExtentsSize().Y / 2, 0, 0)
+	att1.Parent = fruit.PrimaryPart
+	local trail: Trail = game.ReplicatedStorage.Assets.Trails.Fruit:Clone()
+	trail.Attachment0 = att0
+	trail.Attachment1 = att1
+	trail.Parent = fruit.PrimaryPart
 	game:GetService("Debris"):AddItem(fruit, 2)
 	local fruitName = fruit.Name
 	local fruitStats = FruitStats[fruitName]
@@ -118,9 +132,25 @@ function FruitService.FruitHarvest(player, fruit)
 		if math.random(1, 5) == 1 then
 			fruit.IsDiamond = true
 			fruit.Value *= 5
+			particles.Color = ColorSequence.new({
+				ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 68, 255)),
+				ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 68, 255)),
+			})
+			trail.Color = ColorSequence.new({
+				ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 68, 255)),
+				ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 68, 255)),
+			})
 		else
 			fruit.IsGolden = true
 			fruit.Value *= 2
+			particles.Color = ColorSequence.new({
+				ColorSequenceKeypoint.new(0, Color3.fromRGB(233, 229, 24)),
+				ColorSequenceKeypoint.new(1, Color3.fromRGB(233, 229, 24)),
+			})
+			trail.Color = ColorSequence.new({
+				ColorSequenceKeypoint.new(0, Color3.fromRGB(233, 229, 24)),
+				ColorSequenceKeypoint.new(1, Color3.fromRGB(233, 229, 24)),
+			})
 		end
 	end
 	local fruitObject = ObjectAndTableConverterService.TableToObject(fruit)
@@ -129,6 +159,7 @@ function FruitService.FruitHarvest(player, fruit)
 	local description =
 		string.format("$%.2f. %s", fruit.Value, fruit.IsGolden and "Golden." or (fruit.IsDiamond and "Diamond." or ""))
 	NotificationsService.Notify(player, fruit.Name, description, 2)
+	particles:Emit(3)
 end
 
 function FruitService.GetFruitSpawn(tree: Model): Part
