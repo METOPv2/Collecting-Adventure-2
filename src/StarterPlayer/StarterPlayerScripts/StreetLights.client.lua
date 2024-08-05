@@ -2,12 +2,22 @@ local streetLights = workspace:WaitForChild("StreetLights")
 local streetLightsEnabled = false
 
 local function IsItDay(): boolean
-	return game.Lighting.ClockTime >= 6 and game.Lighting.ClockTime < 18
+	return game.Lighting.ClockTime >= 6.07 and game.Lighting.ClockTime < 17.93
 end
 
 local function StreetLightLogic(streetLight: Model)
-	streetLight:WaitForChild("LightPart").SpotLight.Enabled = not IsItDay()
-	streetLight:WaitForChild("LightPart").Material = IsItDay() and Enum.Material.Plaster or Enum.Material.Neon
+	for _, lightPart in ipairs(streetLight:GetChildren()) do
+		if lightPart.Name == "LightPart" then
+			lightPart.SpotLight.Enabled = not IsItDay()
+			lightPart.Material = IsItDay() and Enum.Material.Plaster or Enum.Material.Neon
+		end
+	end
+	streetLight.ChildAdded:Connect(function(child)
+		if child.Name == "LightPart" then
+			child.SpotLight.Enabled = not IsItDay()
+			child.Material = IsItDay() and Enum.Material.Plaster or Enum.Material.Neon
+		end
+	end)
 end
 
 local function UpdateStreetLights()
