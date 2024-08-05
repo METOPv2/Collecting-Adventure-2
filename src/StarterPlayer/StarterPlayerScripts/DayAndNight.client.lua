@@ -1,9 +1,9 @@
 local TweenService = game:GetService("TweenService")
-local tweenInfo = TweenInfo.new(20, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
+local tweenInfo = TweenInfo.new(5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
 local tweenIn = TweenService:Create(game.Lighting, tweenInfo, { ExposureCompensation = -3 })
 local tweenOut = TweenService:Create(game.Lighting, tweenInfo, { ExposureCompensation = 0 })
 
-local seconds = 17.6 * 60 * 60
+local seconds = 7 * 60 * 60
 while true do
 	game.Lighting.TimeOfDay = string.format(
 		"%d:%d:%d",
