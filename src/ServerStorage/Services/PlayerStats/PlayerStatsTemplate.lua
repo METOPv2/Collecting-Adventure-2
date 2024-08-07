@@ -6,4 +6,6 @@ return {
 			InventoryUI = Enum.KeyCode.Q.Name,
 		},
 	},
+	EquippedBackpack = "Default",
+	Backpacks = { "Default" },
 }

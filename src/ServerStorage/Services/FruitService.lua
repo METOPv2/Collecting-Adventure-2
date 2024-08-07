@@ -4,6 +4,7 @@ local ObjectAndTableConverterService = require(ServerStorage.Source.Services.Obj
 local Fruit = require(ReplicatedStorage.Source.Classes.Fruit)
 local FruitStats = require(ReplicatedStorage.Source.Stats.Fruits)
 local NotificationsService = require(game.ServerStorage.Source.Services.NotiifcationsService)
+local backpacksStats = require(game.ReplicatedStorage.Source.Stats.Backpacks)
 local FruitService = {}
 
 function FruitService.Init()
@@ -88,78 +89,91 @@ function FruitService.InitializePromptOnFruit(fruit: Model)
 	prompt.Parent = fruit.PrimaryPart
 	prompt.Triggered:Connect(function(player)
 		local tree = fruit.Parent
-		FruitService.FruitHarvest(player, fruit)
-		task.wait(fruitStats.RespawnTime)
-		local fruitSpawn = FruitService.GetFruitSpawn(tree)
-		fruit = FruitService.CreateFruitModel(fruit.Name)
-		FruitService.PositionFruitModelOnFruitSpawn(fruit, fruitSpawn)
-		FruitService.InitializePromptOnFruit(fruit)
-		fruit.Parent = tree
+		local success = FruitService.FruitHarvest(player, fruit)
+		if success then
+			task.wait(fruitStats.RespawnTime)
+			local fruitSpawn = FruitService.GetFruitSpawn(tree)
+			fruit = FruitService.CreateFruitModel(fruit.Name)
+			FruitService.PositionFruitModelOnFruitSpawn(fruit, fruitSpawn)
+			FruitService.InitializePromptOnFruit(fruit)
+			fruit.Parent = tree
+		end
 	end)
 end
 
 function FruitService.FruitHarvest(player, fruit)
-	fruit.PrimaryPart.ProximityPrompt:Destroy()
-	for _, fruitPart: Part in ipairs(fruit:GetChildren()) do
-		if fruitPart:IsA("BasePart") then
-			fruitPart.Anchored = false
-			fruitPart.CanCollide = true
+	local equippedBackpackStats = backpacksStats[player.PlayerStats.EquippedBackpack.Value]
+	local inventory = player.PlayerStats.Inventory
+	if #inventory:GetChildren() < equippedBackpackStats.Capacity then
+		fruit.PrimaryPart.ProximityPrompt:Destroy()
+		for _, fruitPart: Part in ipairs(fruit:GetChildren()) do
+			if fruitPart:IsA("BasePart") then
+				fruitPart.Anchored = false
+				fruitPart.CanCollide = true
+			end
 		end
-	end
-	local att = Instance.new("Attachment")
-	att.Parent = fruit.PrimaryPart
-	local particles: ParticleEmitter = game.ReplicatedStorage.Assets.Particles.FruitHarvest:Clone()
-	particles.Parent = att
-	local att0 = Instance.new("Attachment")
-	att0.CFrame = CFrame.new(fruit:GetExtentsSize().X / 2, 0, 0)
-	att0.Parent = fruit.PrimaryPart
-	local att1 = Instance.new("Attachment")
-	att1.CFrame = CFrame.new(-fruit:GetExtentsSize().Y / 2, 0, 0)
-	att1.Parent = fruit.PrimaryPart
-	local trail: Trail = game.ReplicatedStorage.Assets.Trails.Fruit:Clone()
-	trail.Attachment0 = att0
-	trail.Attachment1 = att1
-	trail.Parent = fruit.PrimaryPart
-	game:GetService("Debris"):AddItem(fruit, 2)
-	local fruitName = fruit.Name
-	local fruitStats = FruitStats[fruitName]
-	fruit = Fruit.new()
-	fruit.Name = fruitName
-	fruit.IsDiamond = false
-	fruit.IsGolden = false
-	fruit.Value = fruitStats.Value
-	if math.random(1, 3) == 1 then
-		if math.random(1, 5) == 1 then
-			fruit.IsDiamond = true
-			fruit.Value *= 5
-			particles.Color = ColorSequence.new({
-				ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 68, 255)),
-				ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 68, 255)),
-			})
-			trail.Color = ColorSequence.new({
-				ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 68, 255)),
-				ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 68, 255)),
-			})
-		else
-			fruit.IsGolden = true
-			fruit.Value *= 2
-			particles.Color = ColorSequence.new({
-				ColorSequenceKeypoint.new(0, Color3.fromRGB(233, 229, 24)),
-				ColorSequenceKeypoint.new(1, Color3.fromRGB(233, 229, 24)),
-			})
-			trail.Color = ColorSequence.new({
-				ColorSequenceKeypoint.new(0, Color3.fromRGB(233, 229, 24)),
-				ColorSequenceKeypoint.new(1, Color3.fromRGB(233, 229, 24)),
-			})
+		local att = Instance.new("Attachment")
+		att.Parent = fruit.PrimaryPart
+		local particles: ParticleEmitter = game.ReplicatedStorage.Assets.Particles.FruitHarvest:Clone()
+		particles.Parent = att
+		local att0 = Instance.new("Attachment")
+		att0.CFrame = CFrame.new(fruit:GetExtentsSize().X / 2, 0, 0)
+		att0.Parent = fruit.PrimaryPart
+		local att1 = Instance.new("Attachment")
+		att1.CFrame = CFrame.new(-fruit:GetExtentsSize().Y / 2, 0, 0)
+		att1.Parent = fruit.PrimaryPart
+		local trail: Trail = game.ReplicatedStorage.Assets.Trails.Fruit:Clone()
+		trail.Attachment0 = att0
+		trail.Attachment1 = att1
+		trail.Parent = fruit.PrimaryPart
+		game:GetService("Debris"):AddItem(fruit, 2)
+		local fruitName = fruit.Name
+		local fruitStats = FruitStats[fruitName]
+		fruit = Fruit.new()
+		fruit.Name = fruitName
+		fruit.IsDiamond = false
+		fruit.IsGolden = false
+		fruit.Value = fruitStats.Value
+		if math.random(1, 3) == 1 then
+			if math.random(1, 5) == 1 then
+				fruit.IsDiamond = true
+				fruit.Value *= 5
+				particles.Color = ColorSequence.new({
+					ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 68, 255)),
+					ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 68, 255)),
+				})
+				trail.Color = ColorSequence.new({
+					ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 68, 255)),
+					ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 68, 255)),
+				})
+			else
+				fruit.IsGolden = true
+				fruit.Value *= 2
+				particles.Color = ColorSequence.new({
+					ColorSequenceKeypoint.new(0, Color3.fromRGB(233, 229, 24)),
+					ColorSequenceKeypoint.new(1, Color3.fromRGB(233, 229, 24)),
+				})
+				trail.Color = ColorSequence.new({
+					ColorSequenceKeypoint.new(0, Color3.fromRGB(233, 229, 24)),
+					ColorSequenceKeypoint.new(1, Color3.fromRGB(233, 229, 24)),
+				})
+			end
 		end
+		local fruitObject = ObjectAndTableConverterService.TableToObject(fruit)
+		fruitObject.Name = fruit.Name
+		fruitObject.Parent = player.PlayerStats.Inventory
+		local description = string.format(
+			"$%.2f. %s",
+			fruit.Value,
+			fruit.IsGolden and "Golden." or (fruit.IsDiamond and "Diamond." or "")
+		)
+		NotificationsService.Notify(player, fruit.Name, description, 2)
+		particles:Emit(3)
+		return true
+	else
+		NotificationsService.Notify(player, "Lack of capacity", "Sell your fruits to get more space.", 5)
+		return false
 	end
-	local fruitObject = ObjectAndTableConverterService.TableToObject(fruit)
-	fruitObject.Name = fruit.Name
-	fruitObject.Parent = player.PlayerStats.Inventory
-	local description =
-		string.format("$%.2f. %s", fruit.Value, fruit.IsGolden and "Golden." or (fruit.IsDiamond and "Diamond." or ""))
-	NotificationsService.Notify(player, fruit.Name, description, 2)
-	particles:Emit(3)
 end
 
 function FruitService.GetFruitSpawn(tree: Model): Part
