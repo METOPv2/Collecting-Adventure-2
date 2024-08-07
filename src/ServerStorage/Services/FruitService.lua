@@ -76,6 +76,24 @@ function FruitService.PositionFruitModelOnFruitSpawn(fruit: Model, spawn: Part)
 
 		fruit:PivotTo(spawn.CFrame * CFrame.new(0, 5, 0) * CFrame.Angles(0, math.rad(math.random(0, 360)), 0))
 		fruit:PivotTo(fruit:GetPivot() * CFrame.new(0, 0, math.random(5, 8)))
+	elseif fruitStats.FruitSpawnType == "Berrie" then
+		fruit:PivotTo(
+			spawn.CFrame
+				* CFrame.new(
+					if spawn.Size.X < spawn.Size.Z
+						then Random.new():NextNumber(-1, 1) * spawn.Size.X / 2
+						else Random.new():NextNumber(-1, 1) * spawn.Size.Z,
+					-spawn.Size.Y / 2 - fruit:GetExtentsSize().Y / 2,
+					if spawn.Size.X > spawn.Size.Z
+						then Random.new():NextNumber(-1, 1) * spawn.Size.Z / 2
+						else Random.new():NextNumber(-1, 1) * spawn.Size.X
+				)
+				* CFrame.Angles(
+					math.rad(math.random(0, 360)),
+					math.rad(math.random(0, 360)),
+					math.rad(math.random(0, 360))
+				)
+		)
 	end
 end
 
