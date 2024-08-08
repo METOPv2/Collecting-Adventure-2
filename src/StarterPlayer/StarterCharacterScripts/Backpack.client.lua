@@ -1,13 +1,20 @@
 local equippedBackpack = game.Players.LocalPlayer:WaitForChild("PlayerStats").EquippedBackpack
 local backpacksAssets = game.ReplicatedStorage.Assets.Backpacks
+local currentBackpackModel = nil
 
 local function GetTorso(): BasePart
-	return script:FindFirstAncestorOfClass("Model"):FindFirstChild("Torso")
-		or script:FindFirstAncestorOfClass("Model"):FindFirstChild("UpperTorso")
+	return script:FindFirstAncestorOfClass("Model"):WaitForChild("Torso", 3)
+		or script:FindFirstAncestorOfClass("Model"):WaitForChild("UpperTorso", 3)
 end
 
 local function EquipBackpack(backpack: string)
+	if currentBackpackModel then
+		currentBackpackModel:Destroy()
+		currentBackpackModel = nil
+	end
+
 	local backpackModel: Model = backpacksAssets:FindFirstChild(backpack):Clone()
+	currentBackpackModel = backpackModel
 	local torso = GetTorso()
 	backpackModel:PivotTo(
 		torso.CFrame
