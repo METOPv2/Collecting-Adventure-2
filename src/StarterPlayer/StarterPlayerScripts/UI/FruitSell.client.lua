@@ -64,4 +64,5 @@ inventory.ChildAdded:Connect(AddFruit)
 inventory.ChildRemoved:Connect(RemoveFruit)
 sellAllFruits.Activated:Connect(function()
 	game.ReplicatedStorage.RemoteEvents.SellAllFruits:FireServer()
+	fruitSell.Enabled = false
 end)
