@@ -1,76 +1,56 @@
 local ContextActionService = game:GetService("ContextActionService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
 local StarterPlayer = game:GetService("StarterPlayer")
-local sprintParticles: ParticleEmitter = game.ReplicatedStorage.Assets.Particles.Sprint
-local currentParticles: ParticleEmitter = nil
-local humanoid: Humanoid = script.Parent.Parent.Humanoid
-local maxStamina: IntValue = ReplicatedStorage.Stamina.MaxStamina
-local currentStamina: IntValue = ReplicatedStorage.Stamina.CurrentStamina
+local localHumanoid: Humanoid = script:FindFirstAncestorOfClass("Model"):WaitForChild("Humanoid")
+local currentStamina: IntValue = game.ReplicatedStorage.Stamina.CurrentStamina
+local maxStamina: IntValue = game.ReplicatedStorage.Stamina.MaxStamina
+local lastRun = os.clock()
+local isRunning = false
+local isIdle = false
+
 currentStamina.Value = maxStamina.Value
 
-local isRunning = false
-local ranLastTime = os.clock()
-local function StopRunning()
-	currentParticles.Enabled = false
-	ranLastTime = os.clock()
-	humanoid.WalkSpeed = StarterPlayer.CharacterWalkSpeed
-	isRunning = false
-	task.wait(5)
-	if (ranLastTime - os.clock()) >= 5 then
+local function Run(name, state)
+	if name ~= "Run" then
 		return
 	end
-	while not isRunning and currentStamina.Value < maxStamina.Value do
-		currentStamina.Value += 1
-		task.wait(10 / maxStamina.Value)
-	end
-end
 
-local function InitializeParticles()
-	local attachment = Instance.new("Attachment")
-	attachment.CFrame = CFrame.new(
-		0,
-		-(
-				script:FindFirstAncestorOfClass("Model"):GetPivot().Position
-				- (
-					game.Players.LocalPlayer.Character:GetPivot().Position
-					- Vector3.new(0, game.Players.LocalPlayer.Character:GetExtentsSize().Y / 2, 0)
-				)
-			).Magnitude,
-		0
-	)
-	attachment.Parent = script:FindFirstAncestorOfClass("Model").PrimaryPart
-	currentParticles = sprintParticles:Clone()
-	currentParticles.Parent = attachment
-end
-
-local function Run(name: string, state: Enum.UserInputState)
-	if name == "Run" then
-		if state == Enum.UserInputState.Begin then
-			isRunning = true
-
-			while isRunning do
-				if currentStamina.Value == 0 then
-					StopRunning()
-					break
-				else
-					currentParticles.Enabled = true
-					humanoid.WalkSpeed = StarterPlayer.CharacterWalkSpeed * 2
-					currentStamina.Value -= 1
-					task.wait(30 / maxStamina.Value)
-				end
-			end
-		else
-			StopRunning()
+	if state == Enum.UserInputState.Begin then
+		localHumanoid.WalkSpeed = StarterPlayer.CharacterWalkSpeed * 2
+		isRunning = true
+		while isRunning and currentStamina.Value > 0 and not isIdle do
+			currentStamina.Value -= 1
+			task.wait(30 / maxStamina.Value)
 		end
+		isRunning = false
+		localHumanoid.WalkSpeed = StarterPlayer.CharacterWalkSpeed
+		lastRun = os.clock()
+		task.wait(3)
+		while currentStamina.Value < maxStamina.Value and not isRunning do
+			if (os.clock() - lastRun) >= 3 then
+				currentStamina.Value += 1
+				task.wait(10 / maxStamina.Value)
+			end
+		end
+	else
+		localHumanoid.WalkSpeed = StarterPlayer.CharacterWalkSpeed
+		isRunning = false
 	end
 end
 
 ContextActionService:BindAction("Run", Run, true, Enum.KeyCode.LeftShift)
-InitializeParticles()
-humanoid:GetPropertyChangedSignal("FloorMaterial"):Connect(function()
-	if humanoid.FloorMaterial == Enum.Material.Air and isRunning then
-		currentParticles.Enabled = false
-	elseif humanoid.FloorMaterial ~= Enum.Material.Air and isRunning then
-		currentParticles.Enabled = true
-	end
-end)
+
+local function InitializeParticles(player)
+	local character = player.Character
+	local humanoid: Humanoid = character:WaitForChild("Humanoid")
+	humanoid.Running:Connect(function(speed)
+		character.HumanoidRootPart.RunParticles.Particles.Enabled = speed > 0 and isRunning
+		isIdle = speed == 0
+	end)
+end
+
+for _, player in ipairs(Players:GetPlayers()) do
+	InitializeParticles(player)
+end
+
+game.Players.PlayerAdded:Connect(InitializeParticles)
