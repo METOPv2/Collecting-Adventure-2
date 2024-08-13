@@ -8,11 +8,6 @@ local NotificationsService = require(game.ServerStorage.Source.Services.Notiifca
 local BackpacksStats = require(game.ReplicatedStorage.Source.Stats.Backpacks)
 local FruitService = {}
 
-function FruitService.Init()
-	local sellPrompt: ProximityPrompt = workspace.SellMan.HumanoidRootPart.Sell
-	sellPrompt.Triggered:Connect(FruitService.SellFruits)
-end
-
 function FruitService.Start()
 	for _, tree: Model in ipairs(workspace.Trees:GetChildren()) do
 		local fruitSpawns = FruitService.GetFruitSpawns(tree)
