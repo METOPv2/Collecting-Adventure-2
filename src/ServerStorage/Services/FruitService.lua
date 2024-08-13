@@ -139,6 +139,14 @@ function FruitService.GetCapacity(player: Player): number
 	return BackpacksStats[player.PlayerStats.EquippedBackpackStats.Value].Capacity
 end
 
+function FruitService.FruitsToCapacity(fruits: { folder }): number
+	local capacity = 0
+	for _, fruit in ipairs(fruits) do
+		capacity += fruit.Weight.Value
+	end
+	return capacity
+end
+
 function FruitService.FruitHarvest(player: Player, fruit: Model)
 	local equippedBackpackStats = BackpacksStats[player.PlayerStats.EquippedBackpack.Value]
 	local fruitStats = FruitStats[fruit.Name]

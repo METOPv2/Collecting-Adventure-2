@@ -2,9 +2,9 @@ local Players = game:GetService("Players")
 local connections = {}
 
 local function LevelUp(xp: number, lvl: IntValue): number
-	if xp >= (10 * (1.2 ^ lvl.Value)) then
-		lvl.Value += 1
+	if xp.Value >= (10 * (1.2 ^ lvl.Value)) then
 		xp.Value -= (10 * (1.2 ^ lvl.Value))
+		lvl.Value += 1
 		return LevelUp(xp, lvl)
 	end
 end
@@ -15,8 +15,8 @@ local function PlayerAdded(player: Player)
 	connections[player] = {}
 	table.insert(
 		connections[player],
-		xp.Changed:Connect(function(newXp)
-			LevelUp(newXp, lvl)
+		xp.Changed:Connect(function()
+			LevelUp(xp, lvl)
 		end)
 	)
 end

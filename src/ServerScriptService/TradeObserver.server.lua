@@ -3,6 +3,7 @@ local sendTradingInfo: RemoteEvent = game.ReplicatedStorage.RemoteEvents.SendTra
 local connectTradingProccess: BindableEvent = game.ServerStorage.BindableEvents.ConnectTradingProccess
 local NotificationsService = require(game.ServerStorage.Source.Services.NotiifcationsService)
 local BackpackStats = require(game.ReplicatedStorage.Source.Stats.Backpacks)
+local FruitService = require(game.ServerStorage.Source.Services.FruitService)
 local trades = {}
 
 local function CancelTrade(tradeKey, trade, whoCancelled)
@@ -89,8 +90,17 @@ sendTradingInfo.OnServerEvent:Connect(function(player, key: string, value1: any)
 						else
 							items = trade.player2Items
 						end
+						local fruits = {}
+						for _, uniqueId in ipairs(items) do
+							for _, aFruit in ipairs(receiver.PlayerStats.Inventory:GetChildren()) do
+								if aFruit.UniqueId.Value == uniqueId then
+									table.insert(fruits, aFruit)
+									break
+								end
+							end
+						end
 						if
-							#items + #receiver.PlayerStats.Inventory:GetChildren()
+							FruitService.FruitsToCapacity(fruits) + FruitService.GetTakenCapacityInKG(receiver)
 							< BackpackStats[receiver.PlayerStats.EquippedBackpack.Value].Capacity
 						then
 							table.insert(items, value1)
