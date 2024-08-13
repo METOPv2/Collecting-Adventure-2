@@ -1,3 +1,4 @@
+local HttpService = game:GetService("HttpService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 local ObjectAndTableConverterService = require(ServerStorage.Source.Services.ObjectAndTableConverterService)
@@ -152,6 +153,7 @@ function FruitService.FruitHarvest(player, fruit)
 		fruit.IsDiamond = false
 		fruit.IsGolden = false
 		fruit.Value = fruitStats.Value
+		fruit.UniqueId = HttpService:GenerateGUID(false)
 		if math.random(1, 3) == 1 then
 			if math.random(1, 5) == 1 then
 				fruit.IsDiamond = true

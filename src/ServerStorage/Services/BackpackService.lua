@@ -19,8 +19,12 @@ end
 
 function BackpackService.BuyBackpack(player: Player, backpackName: string)
 	if BackpackService.HasBackpack(player, backpackName) then
-		local equippedBackapack = player.PlayerStats.EquippedBackpack
-		equippedBackapack.Value = backpackName
+		if BackpacksStats[backpackName].Capacity >= #player.PlayerStats.Inventory:GetChildren() then
+			local equippedBackapack = player.PlayerStats.EquippedBackpack
+			equippedBackapack.Value = backpackName
+		else
+			NotificationsService.Notify(player, "Can't equip", "Not enough space in backpack.", 5)
+		end
 	else
 		local backpackStats = BackpacksStats[backpackName]
 		local money = player.PlayerStats.Money
