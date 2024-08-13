@@ -141,7 +141,19 @@ end
 
 function FruitService.FruitHarvest(player: Player, fruit: Model)
 	local equippedBackpackStats = BackpacksStats[player.PlayerStats.EquippedBackpack.Value]
+	local fruitStats = FruitStats[fruit.Name]
 	if FruitService.GetTakenCapacityInKG(player) < equippedBackpackStats.Capacity then
+		if player.PlayerStats.Level.Value < fruitStats.LevelReq then
+			return NotificationsService.Notify(
+				player,
+				"High level",
+				string.format(
+					"You need %d more levels to be able to harbest it.",
+					fruitStats.LevelReq - player.PlayerStats.Level.Value
+				),
+				5
+			)
+		end
 		fruit.PrimaryPart.ProximityPrompt:Destroy()
 		for _, fruitPart: Part in ipairs(fruit:GetChildren()) do
 			if fruitPart:IsA("BasePart") then
@@ -165,7 +177,6 @@ function FruitService.FruitHarvest(player: Player, fruit: Model)
 		trail.Parent = fruit.PrimaryPart
 		game:GetService("Debris"):AddItem(fruit, 2)
 		local fruitName = fruit.Name
-		local fruitStats = FruitStats[fruitName]
 		fruit = Fruit.new()
 		fruit.Name = fruitName
 		fruit.IsDiamond = false
@@ -201,6 +212,7 @@ function FruitService.FruitHarvest(player: Player, fruit: Model)
 		fruitObject.Name = fruit.Name
 		fruitObject.Parent = player.PlayerStats.Inventory
 		particles:Emit(3)
+		player.PlayerStats.Xp.Value += 1
 		return true
 	else
 		NotificationsService.Notify(player, "Lack of capacity", "Sell your fruits to get more space.", 5)
