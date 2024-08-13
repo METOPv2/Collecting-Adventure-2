@@ -66,3 +66,16 @@ sellAllFruits.Activated:Connect(function()
 	game.ReplicatedStorage.RemoteEvents.SellAllFruits:FireServer()
 	fruitSell.Enabled = false
 end)
+
+while true do
+	task.wait()
+	if
+		fruitSell.Enabled == true
+		and (game.Players.LocalPlayer.Character:GetPivot().Position - workspace
+				:WaitForChild("SellMan")
+				:GetPivot().Position).Magnitude
+			> 12
+	then
+		fruitSell.Enabled = false
+	end
+end

@@ -39,6 +39,8 @@ local function Run(name, state)
 end
 
 ContextActionService:BindAction("Run", Run, true, Enum.KeyCode.LeftShift)
+ContextActionService:SetTitle("Run", "Run")
+ContextActionService:SetPosition("Run", UDim2.new(1, -200, 1, -150))
 
 local function InitializeParticles(player)
 	local character = player.Character
