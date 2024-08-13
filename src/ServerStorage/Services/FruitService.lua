@@ -99,7 +99,7 @@ function FruitService.InitializePromptOnFruit(fruit: Model)
 	prompt.ActionText = "Harvest"
 	prompt.HoldDuration = fruitStats.HarvestTime
 	prompt.RequiresLineOfSight = false
-	prompt.KeyboardKeyCode = Enum.KeyCode.F
+	prompt.KeyboardKeyCode = Enum.KeyCode.E
 	prompt.Parent = fruit.PrimaryPart
 	prompt.Triggered:Connect(function(player)
 		local tree = fruit.Parent
@@ -136,7 +136,7 @@ function FruitService.GetTakenCapacityInKG(player: Player): number
 end
 
 function FruitService.GetCapacity(player: Player): number
-	return BackpacksStats[player.PlayerStats.EquippedBackpackStats.Value].Capacity
+	return BackpacksStats[player.PlayerStats.EquippedBackpack.Value].Capacity
 end
 
 function FruitService.FruitsToCapacity(fruits: { Folder }): number

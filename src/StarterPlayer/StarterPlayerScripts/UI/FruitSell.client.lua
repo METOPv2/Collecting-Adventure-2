@@ -1,3 +1,4 @@
+local Players = game:GetService("Players")
 local fruitSell: ScreenGui = game.Players.LocalPlayer.PlayerGui:WaitForChild("FruitSell")
 local holder: ScrollingFrame = fruitSell.Background.Holder.ScrollingFrame
 local itemTemplate: Frame = game.ReplicatedStorage.Assets.UI.InventoryItem
@@ -67,15 +68,19 @@ sellAllFruits.Activated:Connect(function()
 	fruitSell.Enabled = false
 end)
 
-while true do
-	task.wait()
-	if
-		fruitSell.Enabled == true
-		and (game.Players.LocalPlayer.Character:GetPivot().Position - workspace
-				:WaitForChild("SellMan")
-				:GetPivot().Position).Magnitude
-			> 12
-	then
+local prompt: ProximityPrompt = workspace:WaitForChild("SellMan").HumanoidRootPart.SellPrompt
+
+prompt.Triggered:Connect(function(player)
+	if player == game.Players.LocalPlayer then
+		fruitSell.Enabled = not fruitSell.Enabled
+	end
+end)
+
+local sellPart: Part = workspace:WaitForChild("SellPart")
+sellPart.TouchEnded:Connect(function(otherPart)
+	local character = otherPart:FindFirstAncestorOfClass("Model")
+	local player: Player = Players:GetPlayerFromCharacter(character)
+	if player == Players.LocalPlayer then
 		fruitSell.Enabled = false
 	end
-end
+end)

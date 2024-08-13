@@ -14,7 +14,7 @@ end
 
 Players.PlayerAdded:Connect(function(player)
 	if player.Character then
-		CharacterAdded()
+		CharacterAdded(player.Character)
 	end
 	player.CharacterAdded:Connect(CharacterAdded)
 end)

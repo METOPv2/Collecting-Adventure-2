@@ -1,5 +1,4 @@
 local ContextActionService = game:GetService("ContextActionService")
-local Players = game:GetService("Players")
 local StarterPlayer = game:GetService("StarterPlayer")
 local localHumanoid: Humanoid = script:FindFirstAncestorOfClass("Model"):WaitForChild("Humanoid")
 local currentStamina: IntValue = game.ReplicatedStorage.Stamina.CurrentStamina
@@ -22,8 +21,8 @@ local function Run(name, state)
 			currentStamina.Value -= 1
 			task.wait(30 / maxStamina.Value)
 		end
-		isRunning = false
 		localHumanoid.WalkSpeed = StarterPlayer.CharacterWalkSpeed
+		isRunning = false
 		lastRun = os.clock()
 		task.wait(3)
 		while currentStamina.Value < maxStamina.Value and not isRunning do
@@ -41,18 +40,3 @@ end
 ContextActionService:BindAction("Run", Run, true, Enum.KeyCode.LeftShift)
 ContextActionService:SetTitle("Run", "Run")
 ContextActionService:SetPosition("Run", UDim2.new(1, -200, 1, -150))
-
-local function InitializeParticles(player)
-	local character = player.Character
-	local humanoid: Humanoid = character:WaitForChild("Humanoid")
-	humanoid.Running:Connect(function(speed)
-		character.HumanoidRootPart.RunParticles.Particles.Enabled = speed > 0 and isRunning
-		isIdle = speed == 0
-	end)
-end
-
-for _, player in ipairs(Players:GetPlayers()) do
-	InitializeParticles(player)
-end
-
-game.Players.PlayerAdded:Connect(InitializeParticles)
