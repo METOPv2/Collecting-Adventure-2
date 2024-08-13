@@ -5,7 +5,7 @@ local ObjectAndTableConverterService = require(ServerStorage.Source.Services.Obj
 local Fruit = require(ReplicatedStorage.Source.Classes.Fruit)
 local FruitStats = require(ReplicatedStorage.Source.Stats.Fruits)
 local NotificationsService = require(game.ServerStorage.Source.Services.NotiifcationsService)
-local backpacksStats = require(game.ReplicatedStorage.Source.Stats.Backpacks)
+local BackpacksStats = require(game.ReplicatedStorage.Source.Stats.Backpacks)
 local FruitService = {}
 
 function FruitService.Init()
@@ -18,7 +18,7 @@ function FruitService.Start()
 		local fruitSpawns = FruitService.GetFruitSpawns(tree)
 		local fruitStats = FruitStats[tree:GetAttribute("Fruit")]
 		for _, fruitSpawn in ipairs(fruitSpawns) do
-			for _ = 1, fruitStats.FruitsPerSpawn do
+			for _ = 1, FruitService.GetFruitValue(fruitStats.FruitsPerSpawn) do
 				local fruit = FruitService.CreateFruitModel(tree:GetAttribute("Fruit"))
 				FruitService.PositionFruitModelOnFruitSpawn(fruit, fruitSpawn)
 				FruitService.InitializePromptOnFruit(fruit)
@@ -120,10 +120,33 @@ function FruitService.InitializePromptOnFruit(fruit: Model)
 	end)
 end
 
-function FruitService.FruitHarvest(player, fruit)
-	local equippedBackpackStats = backpacksStats[player.PlayerStats.EquippedBackpack.Value]
-	local inventory = player.PlayerStats.Inventory
-	if #inventory:GetChildren() < equippedBackpackStats.Capacity then
+function FruitService.GetFruitValue(value)
+	return type(value) == "table" and Random.new():NextNumber(value[2], value[1]) or value
+end
+
+function FruitService.GetTakenCapacity(player: Player): number
+	local takenCapacity = 0
+	for _, fruit in ipairs(player.PlayerStats.Inventory:GetChildren()) do
+		takenCapacity += fruit.Weight.Value
+	end
+	return takenCapacity
+end
+
+function FruitService.GetTakenCapacityInKG(player: Player): number
+	local takenCapacity = 0
+	for _, fruit in ipairs(player.PlayerStats.Inventory:GetChildren()) do
+		takenCapacity += fruit.Weight.Value
+	end
+	return takenCapacity / 1000
+end
+
+function FruitService.GetCapacity(player: Player): number
+	return BackpacksStats[player.PlayerStats.EquippedBackpackStats.Value].Capacity
+end
+
+function FruitService.FruitHarvest(player: Player, fruit: Model)
+	local equippedBackpackStats = BackpacksStats[player.PlayerStats.EquippedBackpack.Value]
+	if FruitService.GetTakenCapacityInKG(player) < equippedBackpackStats.Capacity then
 		fruit.PrimaryPart.ProximityPrompt:Destroy()
 		for _, fruitPart: Part in ipairs(fruit:GetChildren()) do
 			if fruitPart:IsA("BasePart") then
@@ -152,7 +175,7 @@ function FruitService.FruitHarvest(player, fruit)
 		fruit.Name = fruitName
 		fruit.IsDiamond = false
 		fruit.IsGolden = false
-		fruit.Value = fruitStats.Value
+		fruit.Weight = FruitService.GetFruitValue(fruitStats.Weight)
 		fruit.UniqueId = HttpService:GenerateGUID(false)
 		if math.random(1, 3) == 1 then
 			if math.random(1, 5) == 1 then
@@ -182,12 +205,6 @@ function FruitService.FruitHarvest(player, fruit)
 		local fruitObject = ObjectAndTableConverterService.TableToObject(fruit)
 		fruitObject.Name = fruit.Name
 		fruitObject.Parent = player.PlayerStats.Inventory
-		local description = string.format(
-			"$%.2f. %s",
-			fruit.Value,
-			fruit.IsGolden and "Golden." or (fruit.IsDiamond and "Diamond." or "")
-		)
-		NotificationsService.Notify(player, fruit.Name, description, 2)
 		particles:Emit(3)
 		return true
 	else
@@ -202,12 +219,13 @@ function FruitService.GetFruitSpawn(tree: Model): Part
 end
 
 function FruitService.SellFruits(player)
-	if #player.PlayerStats.Inventory:GetChildren() > 0 then
+	if FruitService.GetTakenCapacityInKG(player) > 0 then
 		local earned = 0
 		local fruitsSold = 0
 		for _, fruit in ipairs(player.PlayerStats.Inventory:GetChildren()) do
-			player.PlayerStats.Money.Value += fruit.Value.Value
-			earned += fruit.Value.Value
+			local fruitStats = FruitStats[fruit.Name]
+			player.PlayerStats.Money.Value += (fruit.Weight.Value / 1000) * fruitStats.Value
+			earned += (fruit.Weight.Value / 1000) * fruitStats.Value
 			fruitsSold += 1
 			fruit:Destroy()
 		end

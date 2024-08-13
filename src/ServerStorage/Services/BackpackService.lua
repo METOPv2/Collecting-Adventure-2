@@ -1,6 +1,7 @@
 local BackpackService = {}
 local NotificationsService = require(game.ServerStorage.Source.Services.NotiifcationsService)
 local BackpacksStats = require(game.ReplicatedStorage.Source.Stats.Backpacks)
+local FruitService = require(game.ServerStorage.Source.Services.FruitService)
 
 function BackpackService.Init()
 	local backpackModels = workspace.BackpackShop.Backpacks
@@ -19,7 +20,7 @@ end
 
 function BackpackService.BuyBackpack(player: Player, backpackName: string)
 	if BackpackService.HasBackpack(player, backpackName) then
-		if BackpacksStats[backpackName].Capacity >= #player.PlayerStats.Inventory:GetChildren() then
+		if FruitService.GetCapacity(player) >= FruitService.GetTakenCapacityInKG(player) then
 			local equippedBackapack = player.PlayerStats.EquippedBackpack
 			equippedBackapack.Value = backpackName
 		else
