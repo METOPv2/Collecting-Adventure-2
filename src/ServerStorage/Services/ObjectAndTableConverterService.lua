@@ -16,7 +16,7 @@ function ObjectAndTableConverterService.ValueToObject(v: number | string | boole
 	end
 end
 
-function ObjectAndTableConverterService.TableToObject(t: { any }): Folder
+function ObjectAndTableConverterService.TableToObject(t: { [string]: any }): Folder
 	local folder = Instance.new("Folder")
 	for key, value in pairs(t) do
 		if type(value) ~= "table" then

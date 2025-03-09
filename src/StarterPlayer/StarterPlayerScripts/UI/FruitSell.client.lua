@@ -68,7 +68,7 @@ sellAllFruits.Activated:Connect(function()
 	fruitSell.Enabled = false
 end)
 
-local prompt: ProximityPrompt = workspace:WaitForChild("SellMan").HumanoidRootPart.SellPrompt
+local prompt: ProximityPrompt = workspace.Models:WaitForChild("SellMan").HumanoidRootPart.SellPrompt
 
 prompt.Triggered:Connect(function(player)
 	if player == game.Players.LocalPlayer then
@@ -76,7 +76,7 @@ prompt.Triggered:Connect(function(player)
 	end
 end)
 
-local sellPart: Part = workspace:WaitForChild("SellPart")
+local sellPart: Part = workspace.Models:WaitForChild("SellPart")
 sellPart.TouchEnded:Connect(function(otherPart)
 	local character = otherPart:FindFirstAncestorOfClass("Model")
 	local player: Player = Players:GetPlayerFromCharacter(character)

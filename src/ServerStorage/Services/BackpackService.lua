@@ -4,7 +4,7 @@ local BackpacksStats = require(game.ReplicatedStorage.Source.Stats.Backpacks)
 local FruitService = require(game.ServerStorage.Source.Services.FruitService)
 
 function BackpackService.Init()
-	local backpackModels = workspace.BackpackShop.Backpacks
+	local backpackModels = workspace.Models.BackpackShop.Backpacks
 
 	for _, backpack in ipairs(backpackModels:GetChildren()) do
 		local backpackStats = BackpacksStats[backpack.Name]

@@ -1,4 +1,4 @@
-local holder = workspace:WaitForChild("Donate"):WaitForChild("Part").SurfaceGui.ScrollingFrame
+local holder = workspace.Models:WaitForChild("Donate"):WaitForChild("Part").SurfaceGui.ScrollingFrame
 local templateButton: Frame = game.ReplicatedStorage.Assets.UI.DonateButtonTemplate
 
 local products = {

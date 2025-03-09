@@ -1,7 +1,6 @@
 local Players = game:GetService("Players")
 local levelUpParticles = game.ReplicatedStorage.Assets.Particles.LevelUp
 local levelUpRemoteEvent: RemoteEvent = game.ReplicatedStorage.RemoteEvents.LevelUp
-local connections = {}
 
 local function LevelUp(player: Player, xp: number, lvl: IntValue): number
 	if xp.Value >= (10 * (1.2 ^ lvl.Value)) then
@@ -26,23 +25,16 @@ end
 local function PlayerAdded(player: Player)
 	local lvl: IntValue = player:WaitForChild("PlayerStats").Level
 	local xp: IntValue = player:WaitForChild("PlayerStats").Xp
-	connections[player] = {}
-	table.insert(
-		connections[player],
-		xp.Changed:Connect(function()
-			LevelUp(player, xp, lvl)
-		end)
-	)
-	if player.Character then
-		CharacterAdded(player.CharacterAdded)
-	end
-	player.CharacterAdded:Connect(CharacterAdded)
-end
 
-local function PlayerRemoving(player)
-	for _, connection in ipairs(connections[player]) do
-		connection:Disconnect()
+	xp.Changed:Connect(function()
+		LevelUp(player, xp, lvl)
+	end)
+
+	if player.Character then
+		CharacterAdded(player.Character)
 	end
+
+	player.CharacterAdded:Connect(CharacterAdded)
 end
 
 for _, player in ipairs(Players:GetPlayers()) do
@@ -50,4 +42,3 @@ for _, player in ipairs(Players:GetPlayers()) do
 end
 
 Players.PlayerAdded:Connect(PlayerAdded)
-Players.PlayerRemoving:Connect(PlayerRemoving)
