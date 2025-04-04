@@ -97,6 +97,18 @@ function PlayerStatsService.InitPlayerStats(player: Player): Folder
 			backpack.Parent = backpacks
 		end
 
+		local locations = Instance.new("Folder")
+		locations.Name = "Locations"
+
+		for _, locationName in ipairs(savedPlayerStats.Locations) do
+			local location = Instance.new("StringValue")
+			location.Name = locationName
+			location.Value = locationName
+			location.Parent = locations
+		end
+
+		locations.Parent = playerStats
+
 		playerStats.Parent = player
 
 		PlayerStatsService.PlayerStatsDatabase[player.UserId] = playerStats
@@ -117,6 +129,7 @@ function PlayerStatsService.DeinitPlayerStats(player: Player)
 		Inventory = {},
 		Binds = {},
 		Backpacks = {},
+		Locations = {},
 	}
 
 	for _, v in ipairs(playerStatsFromDataBase.Inventory:GetChildren()) do
@@ -125,7 +138,9 @@ function PlayerStatsService.DeinitPlayerStats(player: Player)
 		end
 	end
 
-	print(playerStats)
+	for _, location in ipairs(playerStatsFromDataBase.Locations:GetChildren()) do
+		table.insert(playerStats.Locations, location.Name)
+	end
 
 	for _, bind in ipairs(playerStatsFromDataBase.Settings.Binds:GetChildren()) do
 		playerStats.Binds[bind.Name] = bind.Value

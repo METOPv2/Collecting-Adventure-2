@@ -8,4 +8,5 @@ return {
 	},
 	EquippedBackpack = "Default",
 	Backpacks = { "Default" },
+	Locations = {},
 }
