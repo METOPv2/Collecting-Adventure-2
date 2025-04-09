@@ -1,5 +1,5 @@
 local BackpackService = {}
-local NotificationsService = require(game.ServerStorage.Source.Services.NotiifcationsService)
+local NotificationsService = require(game.ServerStorage.Source.Services.NotificationsService)
 local BackpacksStats = require(game.ReplicatedStorage.Source.Stats.Backpacks)
 local FruitService = require(game.ServerStorage.Source.Services.FruitService)
 

@@ -4,7 +4,7 @@ local ServerStorage = game:GetService("ServerStorage")
 local ObjectAndTableConverterService = require(ServerStorage.Source.Services.ObjectAndTableConverterService)
 local Fruit = require(ReplicatedStorage.Source.Classes.Fruit)
 local FruitStats = require(ReplicatedStorage.Source.Stats.Fruits)
-local NotificationsService = require(game.ServerStorage.Source.Services.NotiifcationsService)
+local NotificationsService = require(game.ServerStorage.Source.Services.NotificationsService)
 local BackpacksStats = require(game.ReplicatedStorage.Source.Stats.Backpacks)
 local FruitService = {}
 

@@ -20,31 +20,17 @@ function LocationsController.Init()
 end
 
 function LocationsController.OpenGate(locationName)
-	local gate = gates:FindFirstChild(locationName)
-	if gate then
-		local proximityPrompt = gate.Trigger.ProximityPrompt
-		proximityPrompt.Enabled = false
-
-		local leftHinge = gate.LeftPillar.HingeConstraint
-		local rightHinge = gate.RightPillar.HingeConstraint
-
-		leftHinge.TargetAngle = 80
-		rightHinge.TargetAngle = -80
-	end
+	local gate = gates:WaitForChild(locationName)
+	gate.Transparency = 1
+	gate.CanCollide = false
+	gate.Attachment.ProximityPrompt.Enabled = false
 end
 
 function LocationsController.CloseGate(locationName)
-	local gate = gates:FindFirstChild(locationName)
-	if gate then
-		local proximityPrompt = gate.Trigger.ProximityPrompt
-		proximityPrompt.Enabled = false
-
-		local leftHinge = gate.LeftPillar.HingeConstraint
-		local rightHinge = gate.RightPillar.HingeConstraint
-
-		leftHinge.TargetAngle = 0
-		rightHinge.TargetAngle = -0
-	end
+	local gate = gates:WaitForChild(locationName)
+	gate.Transparency = 0.5
+	gate.CanCollide = true
+	gate.Attachment.ProximityPrompt.Enabled = true
 end
 
 return LocationsController

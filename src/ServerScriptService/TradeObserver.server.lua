@@ -1,7 +1,7 @@
 local Players = game:GetService("Players")
 local sendTradingInfo: RemoteEvent = game.ReplicatedStorage.RemoteEvents.SendTradingInfo
 local connectTradingProccess: BindableEvent = game.ServerStorage.BindableEvents.ConnectTradingProccess
-local NotificationsService = require(game.ServerStorage.Source.Services.NotiifcationsService)
+local NotificationsService = require(game.ServerStorage.Source.Services.NotificationsService)
 local BackpackStats = require(game.ReplicatedStorage.Source.Stats.Backpacks)
 local FruitService = require(game.ServerStorage.Source.Services.FruitService)
 local trades = {}

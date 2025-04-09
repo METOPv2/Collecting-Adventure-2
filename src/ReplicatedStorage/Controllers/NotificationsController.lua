@@ -1,6 +1,6 @@
 local NotificationsController = {}
 local notificationTemplate = game.ReplicatedStorage:WaitForChild("Assets").UI.NotificationTemplate
-local notificationsHolder = game.Players.LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("Main").Notifications
+local notificationsHolder = game.Players.LocalPlayer.PlayerGui:WaitForChild("Interface").Notifications
 local sendNotificationRemoteEvent: RemoteEvent = game.ReplicatedStorage:WaitForChild("RemoteEvents").SendNotification
 
 local tweenService = game:GetService("TweenService")

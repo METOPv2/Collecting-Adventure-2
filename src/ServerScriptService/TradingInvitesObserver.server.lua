@@ -1,4 +1,4 @@
-local NotificationsService = require(game.ServerStorage.Source.Services.NotiifcationsService)
+local NotificationsService = require(game.ServerStorage.Source.Services.NotificationsService)
 local sendTradingInviteRemoteEvent: RemoteEvent = game.ReplicatedStorage.RemoteEvents.SendTradingInvite
 local sendTradingInviteRemoteFunction: RemoteFunction = game.ReplicatedStorage.RemoteFunctions.SendTradingInvite
 local startTrade: RemoteEvent = game.ReplicatedStorage.RemoteEvents.StartTrade
